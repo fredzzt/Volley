@@ -82,6 +82,7 @@ public class VolleyLog {
         String caller = "<unknown>";
         // Walk up the stack looking for the first caller outside of VolleyLog.
         // It will be at least two frames up, so start there.
+        //打印调用信息
         for (int i = 2; i < trace.length; i++) {
             Class<?> clazz = trace[i].getClass();
             if (!clazz.equals(VolleyLog.class)) {
