@@ -135,6 +135,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         mMethod = method;
         mUrl = url;
         mErrorListener = listener;
+        //è®¾ç½®è¶??¶é??è¯?????
         setRetryPolicy(new DefaultRetryPolicy());
 
         mDefaultTrafficStatsTag = findDefaultTrafficStatsTag(url);
@@ -206,6 +207,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         if (MarkerLog.ENABLED) {
             mEventLog.add(tag, Thread.currentThread().getId());
         } else if (mRequestBirthTime == 0) {
+            //elapsedRealtime Returns milliseconds since boot, including time spent in sleep.
             mRequestBirthTime = SystemClock.elapsedRealtime();
         }
     }
@@ -337,6 +339,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
     }
 
     /**
+     * ÉèÖÃHeader²ÎÊý
      * Returns a list of extra HTTP headers to go along with this request. Can
      * throw {@link AuthFailureError} as authentication may be required to
      * provide these values.

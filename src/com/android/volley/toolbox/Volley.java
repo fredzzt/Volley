@@ -76,8 +76,8 @@ public class Volley {
         RequestQueue queue = new RequestQueue(new DiskBasedCache(cacheDir), network);
 
         //stop mCacheDispatcher & NetworkDispatcher[]
-        // Init CacheDispatcher 传入PriorityBlockingQueue、ExecutorDelivery. start
-        // Init NetworkDispatcher 传入PriorityBlockingQueue、ExecutorDelivery 并加入NetworkDispatcher[].start
+        // Init CacheDispatcher 传入PriorityBlockingQueue、ExecutorDelivery .start
+        // Init NetworkDispatcher 传入PriorityBlockingQueue、ExecutorDelivery 并加入NetworkDispatcher[] .start
         queue.start();
 
 		return queue;

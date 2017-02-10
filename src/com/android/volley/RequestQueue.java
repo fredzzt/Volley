@@ -43,7 +43,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class RequestQueue {
 
-	/** Used for generating monotonically-increasing sequence numbers for requests. */
+	/**
+	 * AtomicInteger An int value that may be updated atomically.
+	 * See the java.util.concurrent.atomic package specification for description of the properties of atomic variables
+	 * Used for generating monotonically-increasing sequence numbers for requests.
+	 */
 	private AtomicInteger mSequenceGenerator = new AtomicInteger();
 
 	/**
@@ -172,6 +176,7 @@ public class RequestQueue {
 	 * Gets a sequence number.
 	 */
 	public int getSequenceNumber() {
+		//incrementAndGet Atomically increments by one the current value; +1
 		return mSequenceGenerator.incrementAndGet();
 	}
 
@@ -229,18 +234,22 @@ public class RequestQueue {
 	public <T> Request<T> add(Request<T> request) {
 		// Tag the request as belonging to this queue and add it to the set of current requests.
 		request.setRequestQueue(this);
+
+		//HashSet
 		synchronized (mCurrentRequests) {
 			mCurrentRequests.add(request);
 		}
 
 		// Process requests in the order they are added.
 		request.setSequence(getSequenceNumber());
+		//MarkerLog.add()
 		request.addMarker("add-to-queue");
 
 		// If the request is uncacheable, skip the cache queue and go straight to the network.
 		//如果不允许为缓存队列，则为网络队列
 		//默认缓存
 		if (!request.shouldCache()) {
+			//add request to PriorityBlockingQueue
 			mNetworkQueue.add(request);
 			return request;
 		}
