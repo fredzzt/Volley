@@ -58,8 +58,15 @@ public class CacheDispatcher extends Thread {
      * @param delivery Delivery interface to use for posting responses
      */
     public CacheDispatcher(
-            BlockingQueue<Request<?>> cacheQueue, BlockingQueue<Request<?>> networkQueue,
-            Cache cache, ResponseDelivery delivery) {
+            //×èÈû¶ÓÁÐ public interface BlockingQueue<E> A Queue that additionally supports operations that wait for the queue to become non-empty
+            // when retrieving an element,
+            // and wait for space to become available in the queue when storing an element.
+            // http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/BlockingQueue.html
+            BlockingQueue<Request<?>> cacheQueue,
+            BlockingQueue<Request<?>> networkQueue,
+            Cache cache,
+            ResponseDelivery delivery) {
+
         mCacheQueue = cacheQueue;
         mNetworkQueue = networkQueue;
         mCache = cache;
@@ -79,7 +86,7 @@ public class CacheDispatcher extends Thread {
     public void run() {
         if (DEBUG) VolleyLog.v("start new dispatcher");
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-        //»º´æ³õÊ¼»¯£¬»á±éÀúÕû¸ö»º´æÎÄ¼þ¼Ð
+        //ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
         // Make a blocking call to initialize the cache.
         mCache.initialize();
 
@@ -87,10 +94,10 @@ public class CacheDispatcher extends Thread {
             try {
                 // Get a request from the cache triage queue, blocking until
                 // at least one is available.
-            	//»ñÈ¡ÇëÇó
+                //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
                 final Request<?> request = mCacheQueue.take();
                 request.addMarker("cache-queue-take");
-                //Ö´ÐÐ´úÂë
+                //Ö´ï¿½Ð´ï¿½ï¿½ï¿½
                 // If the request has been canceled, don't bother dispatching it.
                 
                 if (request.isCanceled()) {

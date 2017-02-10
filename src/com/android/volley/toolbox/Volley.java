@@ -44,9 +44,11 @@ public class Volley {
 	 */
 	@SuppressLint("NewApi")
 	public static RequestQueue newRequestQueue(Context context, HttpStack stack) {
-		File cacheDir = new File(context.getCacheDir(), DEFAULT_CACHE_DIR);
+        //Get cache dir
+        File cacheDir = new File(context.getCacheDir(), DEFAULT_CACHE_DIR);
 
-		String userAgent = "volley/0";
+        //Create UserAgent String
+        String userAgent = "volley/0";
 		try {
 			String packageName = context.getPackageName();
 			PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
@@ -54,7 +56,9 @@ public class Volley {
 		} catch (NameNotFoundException e) {
 		}
 
-		if (stack == null) {
+        //Init HttpStack; HurlStack&HttpClientStack是HttpStack的不同实现，
+        //performRequest 为实际网络请求方法
+        if (stack == null) {
 			if (Build.VERSION.SDK_INT >= 9) {
 				stack = new HurlStack();
 			} else {
@@ -64,19 +68,27 @@ public class Volley {
 			}
 		}
 
-		Network network = new BasicNetwork(stack);
+        //Init BasicNetwork$ByteArrayPool ex Network.performRequest 中调用HttpStack的performRequest
+        Network network = new BasicNetwork(stack);
 
-		RequestQueue queue = new RequestQueue(new DiskBasedCache(cacheDir), network);
-		queue.start();
+        //Init DiskBasedCache路径和大小5M，Init ExecutorDelivery，
+        //Init NetworkDispatcher[NETWORK_THREAD_POOL_SIZE] NETWORK_THREAD_POOL_SIZE = 4
+        RequestQueue queue = new RequestQueue(new DiskBasedCache(cacheDir), network);
+
+        //stop mCacheDispatcher & NetworkDispatcher[]
+        // Init CacheDispatcher 传入PriorityBlockingQueue、ExecutorDelivery. start
+        // Init NetworkDispatcher 传入PriorityBlockingQueue、ExecutorDelivery 并加入NetworkDispatcher[].start
+        queue.start();
 
 		return queue;
 		/*
-		 * 实例化一个RequestQueue，其中start()主要完成相关工作线程的开启，
+         * 实例化一个RequestQueue，其中start()主要完成相关工作线程的开启，
 		 * 比如开启缓存线程CacheDispatcher先完成缓存文件的扫描， 还包括开启多个NetworkDispatcher访问网络线程，
 		 * 该多个网络线程将从 同一个 网络阻塞队列中读取消息
 		 * 
-		 * 此处可见，start()已经开启，所有我们不用手动的去调用该方法，在start()方法中如果存在工作线程应该首先终止，并重新实例化工作线程并开启
-		 * 在访问网络很频繁，而又重复调用start()，势必会导致性能的消耗；但是如果在访问网络很少时，调用stop()方法，停止多个线程，然后调用start(),反而又可以提高性能，具体可折中选择
+		 * 此处可见，start()已经开启，所有我们不用手动的去调用该方法，在start()方法中如果存在工作线程应该首先终止，
+		 * 并重新实例化工作线程并开启在访问网络很频繁，而又重复调用start()，势必会导致性能的消耗；
+		 * 但是如果在访问网络很少时，调用stop()方法，停止多个线程，然后调用start(),反而又可以提高性能，具体可折中选择
 		 */
 	}
 
