@@ -31,6 +31,9 @@ public class NetworkResponse {
      * @param data Response body
      * @param headers Headers returned with this response, or null for none
      * @param notModified True if the server returned a 304 and the data was already in cache
+     *  如果客户端在请求一个文件的时候，发现自己缓存的文件有 Last Modified ，那么在请求中会包含 If Modified Since ，
+     *  这个时间就是缓存文件的 Last Modified 。因此，如果请求中包含 If Modified Since，就说明已经有缓存在客户端。
+     *  只要判断这个时间和当前请求的文件的修改时间就可以确定是返回 304 还是 200
      */
     public NetworkResponse(int statusCode, byte[] data, Map<String, String> headers,
             boolean notModified) {
