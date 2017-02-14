@@ -58,7 +58,7 @@ public class CacheDispatcher extends Thread {
      * @param delivery Delivery interface to use for posting responses
      */
     public CacheDispatcher(
-            //×èÈû¶ÓÁÐ public interface BlockingQueue<E> A Queue that additionally supports operations that wait for the queue to become non-empty
+            // ×èÈû¶ÓÁÐ public interface BlockingQueue<E> A Queue that additionally supports operations that wait for the queue to become non-empty
             // when retrieving an element,
             // and wait for space to become available in the queue when storing an element.
             // http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/BlockingQueue.html
@@ -86,8 +86,9 @@ public class CacheDispatcher extends Thread {
     public void run() {
         if (DEBUG) VolleyLog.v("start new dispatcher");
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-        //ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
+        // This gives your thread a slightly lower than normal priority,
         // Make a blocking call to initialize the cache.
+        // DiskBasedCache.initialize()
         mCache.initialize();
 
         while (true) {
@@ -124,12 +125,14 @@ public class CacheDispatcher extends Thread {
 
                 // We have a cache hit; parse its data for delivery back to the request.
                 request.addMarker("cache-hit");
+                // NetworkResponse body
                 Response<?> response = request.parseNetworkResponse(
                         new NetworkResponse(entry.data, entry.responseHeaders));
                 request.addMarker("cache-hit-parsed");
 
                 if (!entry.refreshNeeded()) {
                     // Completely unexpired cache hit. Just deliver the response.
+                    // ExecutorDelivery.postResponse
                     mDelivery.postResponse(request, response);
                 } else {
                     // Soft-expired cache hit. We can deliver the cached response,

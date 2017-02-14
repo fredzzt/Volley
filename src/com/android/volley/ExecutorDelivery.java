@@ -33,6 +33,8 @@ public class ExecutorDelivery implements ResponseDelivery {
      */
     public ExecutorDelivery(final Handler handler) {
         // Make an Executor that just wraps the handler.
+        // Executes the given command at some time in the future. The command may execute in a new thread,
+        // in a pooled thread, or in the calling thread, at the discretion of the Executor implementation.
         mResponsePoster = new Executor() {
             @Override
             public void execute(Runnable command) {

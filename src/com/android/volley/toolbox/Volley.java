@@ -37,7 +37,7 @@ public class Volley {
 
 	/**
 	 * Creates a default instance of the worker pool and calls {@link RequestQueue#start()} on it.
-	 *获取Volley对象
+	 * 获取Volley对象
 	 * @param context A {@link Context} to use for creating the cache dir.
 	 * @param stack An {@link HttpStack} to use for the network, or null for default.
 	 * @return A started {@link RequestQueue} instance.
