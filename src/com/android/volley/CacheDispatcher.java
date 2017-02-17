@@ -82,6 +82,13 @@ public class CacheDispatcher extends Thread {
         interrupt();
     }
 
+    /*
+    *
+    * 首先从缓存队列取出请求，判断是否请求是否被取消了，
+    * 如果没有则判断该请求是否有缓存的响应，
+    * 如果有并且没有过期则对缓存响应进行解析并回调给主线程。
+    *
+    * */
     @Override
     public void run() {
         if (DEBUG) VolleyLog.v("start new dispatcher");
