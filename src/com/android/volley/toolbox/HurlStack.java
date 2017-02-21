@@ -149,6 +149,30 @@ public class HurlStack implements HttpStack {
      * Create an {@link HttpURLConnection} for the specified {@code url}.
      */
     protected HttpURLConnection createConnection(URL url) throws IOException {
+        /*
+        * openConnection() It should be noted that a URLConnection instance does not establish the actual network
+        * connection on creation. This will happen only when calling URLConnection.connect().
+        *
+        * streamHandler.openConnection(this) use okhttp after 4.4
+        *
+        * setupStreamHandler() -> streamHandler
+        *
+        * else if (protocol.equals("http")) {
+            try {
+                String name = "com.android.okhttp.HttpHandler";
+                streamHandler = (URLStreamHandler) Class.forName(name).newInstance();
+            } catch (Exception e) {
+                throw new AssertionError(e);
+            }
+        *
+        * OkHttp in Android is here: https://android.googlesource.com/platform/external/okhttp/+/master.
+        *  The reason the package name is com.android.okhttp is because there are jarjar rules which
+        *  repackage it under that name.
+        *
+        *  com.squareup.okhttp.HttpHandler.openConnection(URL url)
+        *  return public class HttpURLConnectionImpl extends HttpURLConnection {  }
+        *
+        * */
         return (HttpURLConnection) url.openConnection();
     }
 
@@ -192,6 +216,17 @@ public class HurlStack implements HttpStack {
                     connection.setRequestMethod("POST");
                     connection.addRequestProperty(HEADER_CONTENT_TYPE,
                             request.getPostBodyContentType());
+
+                    /*
+                    * com.squareup.okhttp.internal.huc.HttpURLConnectionImpl.getOutputStream()
+                    *
+                   * 调用getOutputStream()方法也会隐式地进行连接，所以最后在添加请求体后，connect()可以不写。
+                   *
+                   * connect()->initHttpEngine()
+                   * connect()->execute(false)->sendRequest()
+                   * http://blog.csdn.net/jeffery_gong/article/details/51394606
+                   *
+                    * */
                     DataOutputStream out = new DataOutputStream(connection.getOutputStream());
                     out.write(postBody);
                     out.close();

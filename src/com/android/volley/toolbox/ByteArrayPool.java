@@ -53,7 +53,9 @@ import java.util.List;
  */
 public class ByteArrayPool {
     /** The buffer pool, arranged both by last use and by buffer size */
+    //mBuffersByLastUse for trim()
     private List<byte[]> mBuffersByLastUse = new LinkedList<byte[]>();
+    //mBuffersBySize for save
     private List<byte[]> mBuffersBySize = new ArrayList<byte[]>(64);
 
     /** The total size of the buffers in the pool */
@@ -112,6 +114,7 @@ public class ByteArrayPool {
             return;
         }
         mBuffersByLastUse.add(buf);
+        //mBuffersBySize 按大小排序
         int pos = Collections.binarySearch(mBuffersBySize, buf, BUF_COMPARATOR);
         if (pos < 0) {
             pos = -pos - 1;
