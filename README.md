@@ -63,3 +63,5 @@ Volley优化
 [开放网络请求dispatcher线程数量；定义一个优化后的ImageLoader；添加一个返回字节数据的ImageRequest；给图片添加有效期；][2]
   [1]: https://www.zybuluo.com/flyouting/note/22485
   [2]: https://www.zybuluo.com/flyouting/note/21391
+  
+  http://www.jianshu.com/p/33be82da8f25
